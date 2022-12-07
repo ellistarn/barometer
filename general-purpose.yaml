@@ -1,0 +1,50 @@
+# https://sleeplessbeastie.eu/2021/09/10/how-to-enable-control-group-v2/
+# Check version `stat -c %T -f /sys/fs/cgroup`
+# Check kernel args `cat /etc/default/grub | grep GRUB_CMDLINE_LINUX=`
+# `sudo snap logs kubelet-eks -n all`
+# `cat /etc/kubernetes/kubelet/kubelet-config.json`
+apiVersion: karpenter.sh/v1alpha5
+kind: Provisioner
+metadata:
+  name: default
+spec:
+  labels:
+    node.kubernetes.io/instance-type: m5.large
+  providerRef:
+    name: default
+---
+apiVersion: karpenter.k8s.aws/v1alpha1
+kind: AWSNodeTemplate
+metadata:
+  name: default
+spec:
+  userData: |
+    MIME-Version: 1.0
+    Content-Type: multipart/mixed; boundary="BOUNDARY"
+
+    --BOUNDARY
+    Content-Type: text/x-shellscript; charset="us-ascii"
+
+    #!/bin/bash
+
+    # Enable cgroupsv2
+    sudo sed -i -e 's/^GRUB_CMDLINE_LINUX=""/GRUB_CMDLINE_LINUX="systemd.unified_cgroup_hierarchy=1"/' /etc/default/grub
+    sudo update-grub
+
+    # Use systemd driver for cgroups
+    sudo sed -i -e 's/cgroupfs/systemd/' /etc/eks/bootstrap.sh
+
+    sleep 20 && reboot &
+
+    # Trying on EKS Optimized AMI, systemd version too old -- waiting for AL2022
+    # sudo grubby --args="systemd.unified_cgroup_hierarchy=1 psi=1" --update-kernel /boot/vmlinuz-$(uname -r)
+    # sleep 20 && reboot &
+
+    --BOUNDARY--
+  amiSelector:
+    # Latest canonical ubuntu
+    "aws-ids": "ami-0af6d4ce2df13b444"
+  subnetSelector:
+    karpenter.sh/discovery: dev
+  securityGroupSelector:
+    karpenter.sh/discovery: dev
