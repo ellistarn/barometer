@@ -1,0 +1,41 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "barometer.fullname" . }}
+  labels:
+    {{- include "barometer.labels" . | nindent 4 }}
+  {{- with .Values.additionalAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "barometer.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "barometer.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "barometer.fullname" . }}
+  labels:
+    {{- include "barometer.labels" . | nindent 4 }}
+  {{- with .Values.additionalAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+rules:
+  # Read
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["barometer.io"]
+    resources: ["barometers"]
+    verbs: ["get", "list", "watch"]
+  # Write
+  - apiGroups: ["barometer.io"]
+    resources: ["barometers/status"]
+    verbs: ["patch"]

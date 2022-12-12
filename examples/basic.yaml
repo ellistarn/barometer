@@ -1,3 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pressurize
+  labels:
+    app: pressurize
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pressurize
+  template:
+    metadata:
+      labels:
+        app: pressurize
+    spec:
+      containers:
+      - name: pressurize
+        image: ko://github.com/ellistarn/barometer/cmd/pressurize
+        resources:
+          requests:
+            cpu: 1000m
+---
+
+apiVersion: barometer.io/v1alpha1
+kind: Barometer
+metadata:
+  name: pressurize
+spec:
+  selector:
+    app: pressurize
+  threshold:
+    cpu:
+      some:
+        avg10: 0
+---
+
 # https://sleeplessbeastie.eu/2021/09/10/how-to-enable-control-group-v2/
 # Check version `stat -c %T -f /sys/fs/cgroup`
 # Check kernel args `cat /etc/default/grub | grep GRUB_CMDLINE_LINUX=`
@@ -9,7 +46,7 @@ metadata:
   name: default
 spec:
   labels:
-    node.kubernetes.io/instance-type: m5.large
+    node.kubernetes.io/instance-type: m5.xlarge
   providerRef:
     name: default
 ---

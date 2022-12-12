@@ -1,0 +1,76 @@
+# -- Overrides the chart's name.
+nameOverride: ""
+# -- Overrides the chart's computed fullname.
+fullnameOverride: ""
+# -- Additional labels to add into metadata.
+additionalLabels: {}
+# -- Additional annotations to add into metadata.
+additionalAnnotations: {}
+# -- Image pull policy for images.
+imagePullPolicy: IfNotPresent
+# -- Image pull secrets for images.
+imagePullSecrets: []
+serviceAccount:
+  # -- Specifies if a ServiceAccount should be created.
+  create: true
+  # -- The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template.
+  name: ""
+  # -- Additional annotations for the ServiceAccount.
+  annotations: {}
+serviceMonitor:
+  # -- Specifies whether a ServiceMonitor should be created.
+  enabled: false
+  # -- Additional labels for the ServiceMonitor.
+  additionalLabels: {}
+  # -- Endpoint configuration for the ServiceMonitor.
+  endpointConfig: {}
+# -- Number of replicas.
+replicas: 2
+# -- The number of old ReplicaSets to retain to allow rollback.
+revisionHistoryLimit: 10
+# -- Strategy for updating the pod.
+strategy:
+  rollingUpdate:
+    maxUnavailable: 1
+# -- Additional labels for the pod.
+podLabels: {}
+# -- Additional annotations for the pod.
+podAnnotations: {}
+# -- PriorityClass name for the pod.
+priorityClassName: system-cluster-critical
+# -- Override the default termination grace period for the pod.
+terminationGracePeriodSeconds:
+nodeSelector:
+  kubernetes.io/os: linux
+
+controller:
+  # -- Controller image.
+  image: ""
+  # -- SecurityContext for the controller container.
+  securityContext: {}
+  # -- Additional environment variables for the controller pod.
+  env: []
+  # -- Resources for the controller pod.
+  resources:
+    requests:
+      cpu: 1
+      memory: 1Gi
+    limits:
+      cpu: 1
+      memory: 1Gi
+  # -- Controller log level, defaults to the global log level
+  logLevel: ""
+  # -- Controller log encoding, defaults to the global log encoding
+  logEncoding: ""
+  # -- Additional volumeMounts for the controller pod.
+webhook:
+  logLevel: error
+  # -- The container port to use for the webhook.
+  port: 8443
+# -- Global log level
+logLevel: debug
+# -- Gloabl log encoding
+logEncoding: console
+# -- Global Settings
+settings: {}

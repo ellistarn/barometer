@@ -1,0 +1,236 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.8.0
+  creationTimestamp: null
+  name: barometers.barometer.io
+spec:
+  group: barometer.io
+  names:
+    categories:
+    - karpenter
+    kind: Barometer
+    listKind: BarometerList
+    plural: barometers
+    singular: barometer
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: Barometer is the Schema for the Barometers API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: BarometerSpec describes the desired state of the Barometer
+            properties:
+              selector:
+                additionalProperties:
+                  type: string
+                description: Selector matches to pods monitored by this barometer
+                type: object
+              threshold:
+                description: Threshold to trigger pressure warnings
+                properties:
+                  cpu:
+                    description: Timestamp apis.VolatileTime `json:"timestamp"`
+                    properties:
+                      full:
+                        properties:
+                          avg10:
+                            format: int32
+                            type: integer
+                          avg60:
+                            format: int32
+                            type: integer
+                          avg300:
+                            format: int32
+                            type: integer
+                        type: object
+                      some:
+                        properties:
+                          avg10:
+                            format: int32
+                            type: integer
+                          avg60:
+                            format: int32
+                            type: integer
+                          avg300:
+                            format: int32
+                            type: integer
+                        type: object
+                    type: object
+                  io:
+                    properties:
+                      full:
+                        properties:
+                          avg10:
+                            format: int32
+                            type: integer
+                          avg60:
+                            format: int32
+                            type: integer
+                          avg300:
+                            format: int32
+                            type: integer
+                        type: object
+                      some:
+                        properties:
+                          avg10:
+                            format: int32
+                            type: integer
+                          avg60:
+                            format: int32
+                            type: integer
+                          avg300:
+                            format: int32
+                            type: integer
+                        type: object
+                    type: object
+                  memory:
+                    properties:
+                      full:
+                        properties:
+                          avg10:
+                            format: int32
+                            type: integer
+                          avg60:
+                            format: int32
+                            type: integer
+                          avg300:
+                            format: int32
+                            type: integer
+                        type: object
+                      some:
+                        properties:
+                          avg10:
+                            format: int32
+                            type: integer
+                          avg60:
+                            format: int32
+                            type: integer
+                          avg300:
+                            format: int32
+                            type: integer
+                        type: object
+                    type: object
+                type: object
+            required:
+            - threshold
+            type: object
+          status:
+            description: BarometerSpec describes the observed status of the Barometer
+            properties:
+              pressure:
+                additionalProperties:
+                  properties:
+                    cpu:
+                      description: Timestamp apis.VolatileTime `json:"timestamp"`
+                      properties:
+                        full:
+                          properties:
+                            avg10:
+                              format: int32
+                              type: integer
+                            avg60:
+                              format: int32
+                              type: integer
+                            avg300:
+                              format: int32
+                              type: integer
+                          type: object
+                        some:
+                          properties:
+                            avg10:
+                              format: int32
+                              type: integer
+                            avg60:
+                              format: int32
+                              type: integer
+                            avg300:
+                              format: int32
+                              type: integer
+                          type: object
+                      type: object
+                    io:
+                      properties:
+                        full:
+                          properties:
+                            avg10:
+                              format: int32
+                              type: integer
+                            avg60:
+                              format: int32
+                              type: integer
+                            avg300:
+                              format: int32
+                              type: integer
+                          type: object
+                        some:
+                          properties:
+                            avg10:
+                              format: int32
+                              type: integer
+                            avg60:
+                              format: int32
+                              type: integer
+                            avg300:
+                              format: int32
+                              type: integer
+                          type: object
+                      type: object
+                    memory:
+                      properties:
+                        full:
+                          properties:
+                            avg10:
+                              format: int32
+                              type: integer
+                            avg60:
+                              format: int32
+                              type: integer
+                            avg300:
+                              format: int32
+                              type: integer
+                          type: object
+                        some:
+                          properties:
+                            avg10:
+                              format: int32
+                              type: integer
+                            avg60:
+                              format: int32
+                              type: integer
+                            avg300:
+                              format: int32
+                              type: integer
+                          type: object
+                      type: object
+                  type: object
+                description: Pressurized containers that have breached the threshold
+                type: object
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
